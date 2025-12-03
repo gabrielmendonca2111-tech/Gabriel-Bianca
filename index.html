@@ -38,6 +38,10 @@
             position: relative;
         }
 
+        body.splash-active {
+            overflow: hidden;
+        }
+
         /* ========== SPLASH SCREEN ========== */
         .splash-screen {
             position: fixed;
@@ -330,6 +334,41 @@
             font-size: 1.2rem;
             color: var(--text);
             letter-spacing: 0.5px;
+        }
+
+        /* ========== SCROLL INDICATOR ========== */
+        .scroll-indicator {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 40px auto 20px;
+            animation: fadeIn 1.5s ease-out 1s backwards;
+        }
+
+        .scroll-text {
+            font-family: 'Lora', serif;
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .scroll-arrow {
+            font-size: 2rem;
+            color: var(--rose-deep);
+            animation: bounceArrow 2s ease-in-out infinite;
+            filter: drop-shadow(0 2px 4px rgba(255, 148, 187, 0.3));
+        }
+
+        @keyframes bounceArrow {
+            0%, 100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            50% {
+                transform: translateY(15px);
+                opacity: 0.7;
+            }
         }
 
         /* ========== SONG LYRICS ========== */
@@ -863,6 +902,12 @@
                 </div>
             </section>
 
+            <!-- Scroll Indicator -->
+            <div class="scroll-indicator">
+                <span class="scroll-text">Role para ver mais</span>
+                <span class="scroll-arrow">↓</span>
+            </div>
+
             <!-- Song Lyrics -->
             <div class="song-lyrics">
                 <div class="song-icon">🎶</div>
@@ -960,22 +1005,6 @@
                             <div class="photo-card" onclick="openModal('./photos/7.jpg')">
                                 <div class="photo-inner">
                                     <img src="./photos/7.jpg" alt="Gabriel e Bianca - Momento 7">
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Foto 8 -->
-                        <div class="photo-frame">
-                            <div class="photo-card" onclick="openModal('foto8.jpg')">
-                                <div class="photo-inner">
-                                    <img src="foto8.jpg" alt="Gabriel e Bianca - Momento 8">
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Foto 9 -->
-                        <div class="photo-frame">
-                            <div class="photo-card" onclick="openModal('foto9.jpg')">
-                                <div class="photo-inner">
-                                    <img src="foto9.jpg" alt="Gabriel e Bianca - Momento 9">
                                 </div>
                             </div>
                         </div>
@@ -1082,7 +1111,7 @@
         </div>
     </div>
 
-    <!-- Audio - TROQUE O SRC PELA SUA MÚSICA -->
+    <!-- Audio -->
     <audio id="audio" loop>
         <source src="./music/jorge-matheus-e-amor.mp3" type="audio/mpeg">
     </audio>
@@ -1092,6 +1121,9 @@
         const mainContent = document.getElementById('mainContent');
         const startButton = document.getElementById('startButton');
         const audio = document.getElementById('audio');
+
+        // Block body scroll during splash
+        document.body.classList.add('splash-active');
 
         // Start button
         startButton.addEventListener('click', () => {
@@ -1108,6 +1140,7 @@
             setTimeout(() => {
                 splashScreen.classList.add('hidden');
                 mainContent.classList.add('visible');
+                document.body.classList.remove('splash-active');
                 createParticles();
             }, 300);
         });
@@ -1191,11 +1224,9 @@
 
         function handleSwipe() {
             if (touchEndX < touchStartX - 50) {
-                // Swipe left
                 nextBtn.click();
             }
             if (touchEndX > touchStartX + 50) {
-                // Swipe right
                 prevBtn.click();
             }
         }
